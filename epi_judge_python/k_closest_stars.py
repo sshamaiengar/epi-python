@@ -1,9 +1,35 @@
 import functools
 import math
 from typing import Iterator, List
+import heapq
 
 from test_framework import generic_test
 from test_framework.test_utils import enable_executor_hook
+
+"""
+
+Stars are points in 3D space with Earth as origin.
+Total 10^12 stars.
+Compute k closest stars to Earth, given stars in file/
+
+Brute force:
+Sort all stars by distance. Return k closest.
+Time O(n log n), space O(n) (to get stars in memory)
+
+Heap:
+We CAN'T fit all the stars coordinates into RAM so...
+We only care about stars closest to Earth.
+To track candidates for this, need to know about the furthest current candidate.
+If new star is closer, remove the furthest as a candidate.
+Else, ignore new star.
+
+Use max heap of size k, keyed by distance.
+Pop max star if next star is closer.
+In the end, the heap will contain k closest.
+Time (n log n), space O(k)
+
+
+"""
 
 
 class Star:
@@ -28,8 +54,18 @@ class Star:
 
 
 def find_closest_k_stars(stars: Iterator[Star], k: int) -> List[Star]:
-    # TODO - you fill in here.
-    return []
+    hp = []
+    for i in range(k):
+        s = next(stars)
+        d = s.distance
+        heapq.heappush(hp, (-d, s)) # negative key for max heap
+
+    for s in stars:
+        d = s.distance
+        furthest = hp[0]
+        if d < abs(hp[0][0]):
+            heapq.heappushpop(hp, (-d, s))
+    return list(sorted(s for _, s in hp))
 
 
 def comp(expected_output, output):

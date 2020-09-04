@@ -11,11 +11,45 @@ WHITE, BLACK = range(2)
 
 Coordinate = collections.namedtuple('Coordinate', ('x', 'y'))
 
+"""
+
+Find path through maze from start to end.
+
+BFS:
+Track previous to create final path
+O(V + E)
+
+"""
+
+def neighbors(c: Coordinate):
+    return [
+        Coordinate(c.x, c.y + 1),
+        Coordinate(c.x, c.y - 1),
+        Coordinate(c.x + 1, c.y),
+        Coordinate(c.x - 1, c.y)
+    ]
+
 
 def search_maze(maze: List[List[int]], s: Coordinate,
                 e: Coordinate) -> List[Coordinate]:
-    # TODO - you fill in here.
-    return []
+    prev = {s: None}
+    q = [s]
+    while q:
+        curr = q.pop()
+        nbrs = neighbors(curr)
+        for n in nbrs:
+            if path_element_is_feasible(maze, curr, n) and n not in prev:
+                q.insert(0,n)
+                prev[n] = curr
+            if n == e:
+                break
+    path = []
+    if e in prev:
+        last = e
+        while last != None:
+            path.append(last)
+            last = prev[last]
+    return list(reversed(path))
 
 
 def path_element_is_feasible(maze, prev, cur):

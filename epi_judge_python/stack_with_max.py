@@ -1,22 +1,64 @@
 from test_framework import generic_test
 from test_framework.test_failure import TestFailure
 
+"""
+
+Use an additional stack to keep track of the max at each level.
+
+Ex. (left is bottom, right is top)
+
+1
+-> max = 1
+
+1 2
+-> max = 2
+
+1 2 1
+-> max = 2
+
+pop(1)
+1 2
+-> max = 2
+    (because 1 was not greater than current max, next max is still 2)
+
+Update max stack with every push and pop. Watch out for empty stacks.
+
+"""
+
+
 
 class Stack:
+    def __init__(self):
+        self.s = []
+        self.maxes = []
+
     def empty(self) -> bool:
-        # TODO - you fill in here.
-        return True
+        return len(self.s) == 0
 
     def max(self) -> int:
-        # TODO - you fill in here.
+        if not self.empty():
+            return self.maxes[-1]
         return 0
 
     def pop(self) -> int:
-        # TODO - you fill in here.
+        if not self.empty():
+            self.maxes.pop()
+            v = self.s.pop()
+            return v
         return 0
 
     def push(self, x: int) -> None:
-        # TODO - you fill in here.
+        if self.empty():
+            self.s.append(x)
+            self.maxes.append(x)
+        else:
+            curr_max = self.max()
+            if x >= curr_max:
+                new_max = x
+            else:
+                new_max = curr_max
+            self.s.append(x)
+            self.maxes.append(new_max)
         return
 
 

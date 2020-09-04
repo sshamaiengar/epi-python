@@ -1,9 +1,33 @@
 from test_framework import generic_test
+from collections import Counter
 
+"""
+
+Constructible if
+    for each char in letter:
+        count of char in letter <= count of char in magazine
+
+Brute force:
+For each char in letter
+    Count occurrences of char in mag, and compare
+O(nm)
+
+Hash table:
+Get counts of chars in letter (O(n))
+Get counts of chars in magazine (O(m))
+Compare counts (O(k) for k unique chars), basically O(26) = O(1))
+O(n + m)
+
+"""
 
 def is_letter_constructible_from_magazine(letter_text: str,
                                           magazine_text: str) -> bool:
-    # TODO - you fill in here.
+    letter_counts = Counter(letter_text)
+    mag_counts = Counter(magazine_text)
+    mag_counts.subtract(letter_counts)
+    for k, v in mag_counts.items():
+        if v < 0: # higher count in letter
+            return False
     return True
 
 

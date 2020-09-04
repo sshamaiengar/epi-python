@@ -7,10 +7,23 @@ from test_framework.test_utils import enable_executor_hook
 
 NUM_PEGS = 3
 
+"""
+
+Move n rings from peg 0 to peg 1:
+    Move top n-1 rings to peg 2 (recurse)
+    Move nth ring to peg 1
+    Move top n-1 rings to peg 1 (recurse)
+
+"""
 
 def compute_tower_hanoi(num_rings: int) -> List[List[int]]:
-    # TODO - you fill in here.
-    return []
+    def move_stack(n, a, b):
+        if n == 1:
+            return [[a, b]]
+        pegs = set(range(NUM_PEGS))
+        other_peg = list(pegs - {a,b})[0]
+        return move_stack(n-1, a, other_peg) + move_stack(1, a, b) + move_stack(n-1, other_peg, b)
+    return move_stack(num_rings, 0, 1)
 
 
 @enable_executor_hook
